@@ -1,0 +1,15 @@
+pandas>=1.5
+numpy
+scikit-learn
+xgboost
+imbalanced-learn
+shap
+flask
+joblib
+matplotlib
+seaborn
+optuna
+pyarrow
+fastapi
+uvicorn
+requests
