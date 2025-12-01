@@ -9,8 +9,34 @@ CORS(app)
 # Load model
 model = joblib.load("../models/best_model.joblib")
 
+# --- ADD THIS FUNCTION TO app.py ---
+def clean_columns(df):
+    """Clean column names so XGBoost accepts them."""
+    df = df.copy()
+    df.columns = (
+        df.columns
+        .str.replace("<", "lt", regex=False)
+        .str.replace(">", "gt", regex=False)
+        .str.replace("[", "(", regex=False)
+        .str.replace("]", ")", regex=False)
+        .str.replace("%", "pct", regex=False)
+        .str.replace(" ", "_", regex=False)
+    )
+    return df
+# ------------------------------------
+# app.py (Original)
+# ...
 # EXACT training features
 FEATURE_COLUMNS = [
+    'num_of_prev_attempts', 'studied_credits', 'date_registration',
+    # ... (long list of original, uncleaned feature names)
+# ...
+]
+
+# app.py (Modified)
+# ...
+# EXACT training features
+_RAW_FEATURE_COLUMNS = [
     'num_of_prev_attempts', 'studied_credits', 'date_registration',
     'vle_total_clicks', 'vle_days_active', 'vle_first14', 'vle_first28',
     'avg_assessment_score', 'n_submissions',
@@ -42,6 +68,9 @@ FEATURE_COLUMNS = [
     'disability_N', 'disability_Y', 'disability_nan'
 ]
 
+# Clean the feature names to match the model's expected names
+FEATURE_COLUMNS = clean_columns(pd.DataFrame(columns=_RAW_FEATURE_COLUMNS)).columns.tolist()
+# ------------------------------------
 
 def preprocess_input(raw):
     """
@@ -78,7 +107,7 @@ def preprocess_input(raw):
     if r is None:
         row["region_nan"] = 1
     else:
-        col = f"{r}"
+        col = clean_columns(pd.DataFrame(columns=[f"{r}"])).columns.tolist()[0]
         if col in row:
             row[col] = 1
         else:
@@ -89,7 +118,7 @@ def preprocess_input(raw):
     if h is None:
         row["highest_education_nan"] = 1
     else:
-        col = f"{h}"
+        col = clean_columns(pd.DataFrame(columns=[f"{h}"])).columns.tolist()[0]
         if col in row:
             row[col] = 1
         else:
@@ -100,7 +129,7 @@ def preprocess_input(raw):
     if imd is None:
         row["imd_band_nan"] = 1
     else:
-        col = f"{imd}"
+        col = clean_columns(pd.DataFrame(columns=[f"{imd}"])).columns.tolist()[0]
         if col in row:
             row[col] = 1
         else:
@@ -111,7 +140,7 @@ def preprocess_input(raw):
     if age is None:
         row["age_band_nan"] = 1
     else:
-        col = f"{age}"
+        col = clean_columns(pd.DataFrame(columns=[f"{age}"])).columns.tolist()[0]
         if col in row:
             row[col] = 1
         else:
