@@ -164,21 +164,23 @@ export default function App() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
             {[
-              { key: "num_of_prev_attempts", label: "Previous Attempts" },
-              { key: "studied_credits", label: "Studied Credits" },
-              { key: "date_registration", label: "Registration Date" },
-              { key: "vle_total_clicks", label: "VLE Total Clicks" },
-              { key: "vle_days_active", label: "VLE Days Active" },
-              { key: "vle_first14", label: "VLE First 14 Days" },
-              { key: "vle_first28", label: "VLE First 28 Days" },
-              { key: "avg_assessment_score", label: "Avg Assessment Score" },
-              { key: "n_submissions", label: "Number of Submissions" },
-            ].map(({ key, label: fieldLabel }) => (
+              { key: "num_of_prev_attempts", label: "Previous Attempts", min: 0, max: 10 },
+              { key: "studied_credits", label: "Studied Credits", min: 0, max: 600 },
+              { key: "date_registration", label: "Registration Date", min: -365, max: 365 },
+              { key: "vle_total_clicks", label: "VLE Total Clicks", min: 0, max: 100000 },
+              { key: "vle_days_active", label: "VLE Days Active", min: 0, max: 365 },
+              { key: "vle_first14", label: "VLE First 14 Days", min: 0, max: 14 },
+              { key: "vle_first28", label: "VLE First 28 Days", min: 0, max: 28 },
+              { key: "avg_assessment_score", label: "Avg Assessment Score", min: 0, max: 100 },
+              { key: "n_submissions", label: "Number of Submissions", min: 0, max: 50 },
+            ].map(({ key, label: fieldLabel, min, max }) => (
               <div key={key} className="group">
                 <label className={label}>{fieldLabel}</label>
                 <input
                   type="number"
                   placeholder="0"
+                  min={min}
+                  max={max}
                   className="w-full border-2 border-gray-700 bg-gray-900/80 text-gray-200 placeholder-gray-500 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/30 p-3 rounded-xl transition-all duration-200 hover:border-purple-400 hover:shadow-lg hover:shadow-purple-500/20"
                   onChange={(e) =>
                     setField(key, Number(e.target.value) || 0)
